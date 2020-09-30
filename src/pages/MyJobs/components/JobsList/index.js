@@ -52,8 +52,37 @@ const JobListItem = (props) => {
   );
 };
 
-export default function AlignItemsList(props) {
+export default function MyJobsJobList(props) {
   let history = useHistory();
+
+  function getJobTitle(exp, spc, hyr) {
+    console.log(exp);
+    console.log(hyr);
+    const expLvl = {
+      ANALYST: 'Analista (a)',
+      ARCHITECT: 'Arquiteto (a)',
+      ASSISTANT: 'Assistente (a)',
+      HELP: 'Auxiliar',
+      SCIENTIST: 'Ciêntitista (a)',
+      COACH: 'Coach',
+      CONSULTANT: 'Consultor (a)',
+      COORDINATOR: 'Coordenador (a)',
+      DEVELOPER: 'Desenvolvedor (a)',
+      DIRECTOR: 'Diretor (a)',
+      MANAGER: 'Gerente',
+      LEADER: 'Lider',
+      ENGINEER: 'Engenheiro (a)',
+      SPECIALIST: 'Especialista',
+    };
+
+    const hyrLvl = {
+      SENIOR: 'Sênior',
+      JUNIOR: 'Junior',
+      PLAIN: 'Pleno',
+    };
+
+    return `${expLvl[exp]} ${spc} ${hyrLvl[hyr]}`;
+  }
   return (
     <JobListComponentContainer>
       <TableContainer>
@@ -66,7 +95,7 @@ export default function AlignItemsList(props) {
                     <JobListItem title={`#ID`} value={job.id} />
                   </TableCell>
                   <TableCell>
-                    <JobListItem title={`Titulo da vaga`} value={job.title} />
+                    <JobListItem title={`Titulo da vaga`} value={getJobTitle(job.hierarchy_level, job.specialty, job.experience_level)} />
                   </TableCell>
                   <TableCell>
                     <JobListItem

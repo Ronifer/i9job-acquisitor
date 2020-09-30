@@ -13,11 +13,8 @@ import {
 import { useHistory } from "react-router-dom";
 
 import ChipContract from "./../../../../components/Chips/ChipContract";
-import ChipHierarchy from "./../../../../components/Chips/ChipHierarchy";
-import ChipExperience from "./../../../../components/Chips/ChipExperience";
 import ChipJobHistory from "./../../../../components/Chips/ChipHistoryJob";
 
-import ReproveDialog from "./reprove";
 
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
@@ -95,13 +92,37 @@ export default function AlignItemsList(props) {
     setSelectedJobId(null);
   }
 
+  function getJobTitle(exp, spc, hyr) {
+    console.log(exp);
+    console.log(hyr);
+    const expLvl = {
+      ANALYST: 'Analista (a)',
+      ARCHITECT: 'Arquiteto (a)',
+      ASSISTANT: 'Assistente (a)',
+      HELP: 'Auxiliar',
+      SCIENTIST: 'Ciêntitista (a)',
+      COACH: 'Coach',
+      CONSULTANT: 'Consultor (a)',
+      COORDINATOR: 'Coordenador (a)',
+      DEVELOPER: 'Desenvolvedor (a)',
+      DIRECTOR: 'Diretor (a)',
+      MANAGER: 'Gerente',
+      LEADER: 'Lider',
+      ENGINEER: 'Engenheiro (a)',
+      SPECIALIST: 'Especialista',
+    };
+
+    const hyrLvl = {
+      SENIOR: 'Sênior',
+      JUNIOR: 'Junior',
+      PLAIN: 'Pleno',
+    };
+
+    return `${expLvl[exp]} ${spc} ${hyrLvl[hyr]}`;
+  }
+
   return (
     <JobListComponentContainer>
-      <ReproveDialog
-        selectedJobId={selectedJobId}
-        handleCancel={handleCancel}
-        handleSubmit={handleReproveJob}
-      />
       <TableContainer>
         <Table aria-label="simple table">
           <TableBody>
@@ -120,11 +141,11 @@ export default function AlignItemsList(props) {
                     <JobListItem title={`#ID`} value={job.id} />
                   </TableCell>
                   <TableCell>
-                    <JobListItem title={`Titulo da vaga`} value={job.title} />
+                    <JobListItem title={`Vaga`} value={getJobTitle(job.hierarchy_level, job.specialty, job.experience_level)} />
                   </TableCell>
                   <TableCell>
                     <JobListItem
-                      title={`Salario ou Faixa Salarial`}
+                      title={`Salario mensal`}
                       value={job.salary}
                     />
                   </TableCell>
@@ -132,20 +153,6 @@ export default function AlignItemsList(props) {
                     <JobListItem
                       title={`Contrato`}
                       value={<ChipContract contract={job.contract} />}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <JobListItem
-                      title={`Nivel`}
-                      value={<ChipHierarchy hierarchy={job.hierarchy_level} />}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <JobListItem
-                      title={`Experiencia`}
-                      value={
-                        <ChipExperience experience={job.experience_level} />
-                      }
                     />
                   </TableCell>
                   <TableCell>
@@ -173,11 +180,11 @@ export default function AlignItemsList(props) {
                         <AssignmentTurnedInOutlinedIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={"Reprovar Vaga"}>
+                    <Tooltip title={"Detalhes da Vaga"}>
                       <IconButton
-                        onClick={() => setSelectedJobId(job.id)}
+                        onClick={() => null}
                         edge="end"
-                        aria-label="Reprovar Vaga"
+                        aria-label="Detalhes da Vaga"
                       >
                         <VisibilityIcon />
                       </IconButton>

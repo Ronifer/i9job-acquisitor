@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import api from "../../config/api";
 import { toast } from "react-toastify";
 
-import JobsList from "./components/JobsList";
+import TalentList from "./components/TalentList";
 
 const styles = (theme) => ({
   paper: {
@@ -43,16 +43,29 @@ const styles = (theme) => ({
 
 function Content(props) {
   const { classes } = props;
-  const [jobs, setJobs] = useState([]);
+  const [talents, setTalents] = useState([]);
+  const [generatedLink, setGeneratedLink] = useState("");
 
-  function getJobs() {
-    api.get(`/acquisitor/me/jobs`).then((resp) => {
-      setJobs(resp.data.jobs);
+  function getTalents() {
+    api.get(`/acquisitor/talents`).then((resp) => {
+      setTalents(resp.data);
     });
   }
 
+  async function handleLinkGenerate() {
+    try {
+      let response = await api.post(`/acquisitor/talents/invite`);
+      console.log(response);
+      setGeneratedLink(response.data.code);
+      toast.success("Link copiado :)");
+    } catch (e) {
+      console.log(e);
+      toast.error("Erro interno");
+    }
+  }
+
   useEffect(() => {
-    getJobs();
+    getTalents();
   }, []);
 
   return (
@@ -78,24 +91,31 @@ function Content(props) {
                 }}
               />
             </Grid>
+            {generatedLink ? (
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  disabled
+                  value={generatedLink}
+                  InputProps={{
+                    disableUnderline: true,
+                    className: classes.searchInput,
+                  }}
+                />
+              </Grid>
+            ) : null}
+
             <Grid item>
-              <Tooltip title="Reload">
-                <IconButton onClick={() => toast.success("teste")}>
-                  <RefreshIcon className={classes.block} color="inherit" />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item>
-              <Link to="/" component={Button}>
-                Vagas disponiveis
-              </Link>
+              <Button onClick={handleLinkGenerate}>
+                Gerar link de cadastro
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
       <div className={classes.contentWrapper}>
-        {jobs.length > 0 ? (
-          <JobsList refreshJobs={getJobs} jobs={jobs} />
+        {talents.length > 0 ? (
+          <TalentList refreshTalents={getTalents} talents={talents} />
         ) : (
           <Typography color="textSecondary" align="center">
             Você não está trabalhando em nenhuma vaga.

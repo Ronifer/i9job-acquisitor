@@ -10,14 +10,22 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import "react-toastify/dist/ReactToastify.css";
 import Routes from "./routes";
 
+import { GlobalStyle } from "./globalStyle";
+
 let theme = createMuiTheme({
   palette: {
     primary: {
-      light: "#5acead",
-      main: "#5acead",
-      dark: "#5acead",
-      contrastText: "#FFF"
+      light: "#18202c",
+      main: "#18202c",
+      dark: "#18202c",
+      contrastText: "#FFF",
     },
+    error: { 
+      light: "##e74c3c",
+      main: "#e74c3c",
+      dark: "#c0392b",
+      contrastText: "#FFF", 
+    }
   },
   typography: {
     h5: {
@@ -52,7 +60,7 @@ theme = {
     MuiButton: {
       root: {
         borderRadius: "3px",
-        height: "40px"
+        height: "40px",
       },
       label: {
         textTransform: "uppercase",
@@ -67,7 +75,7 @@ theme = {
     MuiOutlinedInput: {
       root: {
         borderRadius: "3px",
-      }
+      },
     },
     MuiTabs: {
       root: {
@@ -137,26 +145,6 @@ const styles = createStyles({
     display: "flex",
     minHeight: "100vh",
   },
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  app: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-  },
-  main: {
-    flex: 1,
-    padding: theme.spacing(6, 4),
-    background: "#eaeff1",
-  },
-  footer: {
-    padding: theme.spacing(2),
-    background: "#eaeff1",
-  },
 });
 
 function Paperbase(props) {
@@ -169,6 +157,7 @@ function Paperbase(props) {
 
   return (
     <ThemeProvider theme={theme}>
+      {/* <GlobalStyle /> */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -177,9 +166,8 @@ function Paperbase(props) {
       />
       <div className={classes.root}>
         <CssBaseline />
-        <div className={classes.app}>
-          <Routes />
-        </div>
+
+        <Routes />
       </div>
     </ThemeProvider>
   );

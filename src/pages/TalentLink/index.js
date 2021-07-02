@@ -11,6 +11,12 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+
 import api from "../../config/api";
 import { toast } from "react-toastify";
 
@@ -71,14 +77,21 @@ export default function SignInSide() {
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [location, setLocation] = useState("");
   const [file, setFile] = useState("");
   const [success, setSuccess] = useState(false);
+  
 
   async function handleSubmit() {
     let data = new FormData();
     data.append("file", file[0]);
     data.append("email", email);
     data.append("full_name", fullName);
+    data.append("phone", phone);
+    data.append("location", location);
+    data.append("birth_date", birthDate);
     try {
       let response = await api.post(`talents/${code}`, data);
       setSuccess(true);
@@ -127,6 +140,36 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                fullWidth
+                inputVariant="outlined"
+                format="dd/MM/yyyy"
+                label="Data de nascimento"
+                value={birthDate}
+                onChange={(date) => setBirthDate(date)}
+              />
+            </MuiPickersUtilsProvider>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              fullWidth
+              label="Telefone"
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+              fullWidth
+              label="CEP"
             />
             <DropzoneArea
               acceptedFiles={["application/pdf"]}

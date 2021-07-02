@@ -10,6 +10,7 @@ import Dashboard from "./../pages/Dashboard";
 import MyJobs from "./../pages/MyJobs";
 import JobDetails from "./../pages/JobDetails";
 import Talents from "./../pages/Talents";
+import TalentDetails from "./../pages/Talents/details";
 
 const drawerWidth = 256;
 
@@ -66,6 +67,9 @@ function PrivateRoutes(props) {
             </Route>
             <Route exact path="/talents">
               <Talents />
+            </Route>
+            <Route exact path="/talents/:id">
+              <TalentDetails />
             </Route>
           </Switch>
         </main>

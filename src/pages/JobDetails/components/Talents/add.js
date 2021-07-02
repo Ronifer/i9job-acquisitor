@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import "date-fns";
 import {
@@ -11,6 +11,7 @@ import {
   DialogTitle,
   Grid,
 } from "@material-ui/core/";
+import { Autocomplete } from "@material-ui/lab";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -20,56 +21,29 @@ import api from "../../../../config/api";
 import { toast } from "react-toastify";
 
 export default function TalentsModal({ open, close, jobId }) {
-  let [fullName, setFullName] = useState("");
-  let [email, setEmail] = useState("");
-  let [location, setLocation] = useState("");
+  let [availableTalents, setAvailableTalents] = useState([]);
   let [acquisitorFeedback, setAcquisitorFeedback] = useState("");
-  let [birthDate, setBirthDate] = useState(new Date());
   let [desiredSalary, setDesiredSalary] = useState("");
-  let [professionalExperiences, setProfessionalExperiences] = useState("");
-  let [academy, setAcademy] = useState("");
-  let [phone, setPhone] = useState("");
+  let [talent, setTalent] = useState(null);
+
+  useEffect(() => {
+    api
+      .get(`/acquisitor/talents/available`)
+      .then((resp) => {
+        setAvailableTalents(resp.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   async function handleSubmit() {
-    let body = {
-      talent: {
-        full_name: fullName,
-        email,
-        location,
-        birth_date: birthDate,
-        phone,
-        academy,
-        professional_experiences: professionalExperiences,
-      },
-      acquisitor_feedback: acquisitorFeedback,
-      desired_salary: desiredSalary,
-    };
-
-    const schema = Yup.object().shape({
-      talent: Yup.object().shape({
-        full_name: Yup.string().required(),
-        birth_date: Yup.date().required(),
-        email: Yup.string().email().required(),
-        phone: Yup.string().required(),
-        location: Yup.string().required(),
-        academy: Yup.string().required(),
-        professional_experiences: Yup.string().required(),
-        location: Yup.string().required(),
-      }),
-      acquisitor_feedback: Yup.string().required(),
-      desired_salary: Yup.number().required(),
-    });
-
     try {
-      await schema.validate(body);
-    } catch (e) {
-      console.log(e);
-      toast.error(e);
-      return false;
-    }
-
-    try {
-      let response = await api.post(`/acquisitor/jobs/${jobId}/talents`, body);
+      let response = await api.post(`/acquisitor/jobs/${jobId}/talents`, {
+        talent_id: talent,
+        acquisitor_feedback: acquisitorFeedback,
+        desired_salary: desiredSalary
+      });
       console.log(response.data);
       toast.success("Talento adicionado a vaga");
       close();
@@ -89,7 +63,7 @@ export default function TalentsModal({ open, close, jobId }) {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          Cadastrar talento para a vaga
+          Adicionar talento a vaga
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -98,53 +72,20 @@ export default function TalentsModal({ open, close, jobId }) {
             :)
           </DialogContentText>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Nome completo"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  fullWidth
-                  inputVariant="outlined"
-                  format="dd/MM/yyyy"
-                  label="Data de nascimento"
-                  value={birthDate}
-                  onChange={(date) => setBirthDate(date)}
-                />
-              </MuiPickersUtilsProvider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                label="Telefone"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Endereço"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                variant="outlined"
+            <Grid item xs={12} sm={8}>
+              <Autocomplete
+                id="combo-box-demo"
+                options={availableTalents}
+                onChange={(e, value) => setTalent(value.id)}
+                getOptionLabel={(option) => option.email}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Talentos disponiveis"
+                    variant="outlined"
+                    fullWidth
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -153,28 +94,6 @@ export default function TalentsModal({ open, close, jobId }) {
                 onChange={(e) => setDesiredSalary(e.target.value)}
                 fullWidth
                 label="Pretenção salarial"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                value={academy}
-                onChange={(e) => setAcademy(e.target.value)}
-                fullWidth
-                label="Formação academica"
-                multiline
-                rows={4}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                value={professionalExperiences}
-                onChange={(e) => setProfessionalExperiences(e.target.value)}
-                fullWidth
-                label="Experiencias profissionais"
-                multiline
-                rows={4}
                 variant="outlined"
               />
             </Grid>

@@ -81,7 +81,13 @@ function TalentList(props) {
                   <TableCell>
                     <TalentListItem
                       title={`Dados cadastrais`}
-                      value={<Chip color="error.main" label="Incompletos" />}
+                      value={<Chip color="error.main" label={talent.reviwed ? "Revisados" : "Não revisados"} />}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TalentListItem
+                      title={`Disponivel ?`}
+                      value={<Chip color="error.main" label={talent.available ? "Sim" : "Não"} />}
                     />
                   </TableCell>
                   <TableCell>
@@ -96,14 +102,14 @@ function TalentList(props) {
                   <TableCell>
                     <Tooltip title={"Painel da vaga"}>
                       <IconButton
-                        // onClick={() => history.push(`/jobs/${job.id}/details`)}
+                        onClick={() => history.push(`/talents/${talent.id}`)}
                         edge="end"
-                        aria-label="Completar perfil do talento."
+                        aria-label="Completar ou editar perfil do talento."
                       >
                         <CreateIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={"Visualizar curriculo"}>
+                    <Tooltip title={"Visualizar curriculo enviado"}>
                       <IconButton
                         // onClick={() => history.push(`/jobs/${job.id}/details`)}
                         edge="end"

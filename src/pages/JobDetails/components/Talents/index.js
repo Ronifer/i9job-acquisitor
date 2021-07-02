@@ -93,7 +93,7 @@ export default function AlignItemsList(props) {
                       />
                     </TableCell>
                     <TableCell>
-                      <JobListItem title={`Pretenção Salárial`} value={11.5} />
+                      <JobListItem title={`Pretenção Salárial`} value={`R$ ${talent.desired_salary}`} />
                     </TableCell>
                     <TableCell>
                       <JobListItem
